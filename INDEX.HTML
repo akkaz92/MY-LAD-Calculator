@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LAD Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      max-width: 600px;
+      background: #f1f1f1;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label, input {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Liquidated Ascertained Damages (LAD) Calculator</h2>
+
+  <label for="spaPrice">SPA Price (e.g. 500000):</label>
+  <input type="number" id="spaPrice" required>
+
+  <label for="agreedDate">Agreed VP Date:</label>
+  <input type="date" id="agreedDate" required>
+
+  <label for="actualDate">Actual VP Date:</label>
+  <input type="date" id="actualDate" required>
+
+  <button onclick="calculateLAD()">Calculate LAD</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculateLAD() {
+      const spaPrice = parseFloat(document.getElementById("spaPrice").value);
+      const agreedDate = new Date(document.getElementById("agreedDate").value);
+      const actualDate = new Date(document.getElementById("actualDate").value);
+
+      if (isNaN(spaPrice) || !agreedDate || !actualDate) {
+        document.getElementById("result").textContent = "Please fill in all fields correctly.";
+        return;
+      }
+
+      const dayInMs = 1000 * 60 * 60 * 24;
+      const delayDays = Math.max(0, Math.floor((actualDate - agreedDate) / dayInMs));
+
+      const annualLADRate = 0.10;
+      const dailyLADRate = (spaPrice * annualLADRate) / 365;
+
+      const ladAmount = delayDays * dailyLADRate;
+
+      document.getElementById("result").innerHTML = `
+        Delay: ${delayDays} day(s)<br>
+        LAD Amount: RM ${ladAmount.toFixed(2)}
+      `;
+    }
+  </script>
+</body>
+</html>
